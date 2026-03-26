@@ -21,5 +21,8 @@
   "homepage": "https://github.com/aliaspin/awesomenode#readme",
   "dependencies": {
     "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "wrangler": "^4.77.0"
   }
 }
