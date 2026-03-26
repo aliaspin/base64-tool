@@ -80,8 +80,8 @@ curl -X POST https://base64-tool.rizo2sirxycaa.workers.dev/api/decode \
 ### Setup
 
 ```bash
-git clone https://github.com/aliaspin/awesomenode.git
-cd awesomenode
+git clone https://github.com/aliaspin/base64-tool.git
+cd base64-tool
 npm install
 npm start
 ```
@@ -107,7 +107,7 @@ Create your API token at [dash.cloudflare.com/profile/api-tokens](https://dash.c
 ## 🗂 Project Structure
 
 ```
-awesomenode/
+base64-tool/
 ├── server.js          # Express server (local dev)
 ├── worker.js          # Cloudflare Worker (production)
 ├── wrangler.toml      # Cloudflare deployment config
