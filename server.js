@@ -7,25 +7,49 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.post('/api/encode', (req, res) => {
-  const { text } = req.body;
-  if (typeof text !== 'string') {
-    return res.status(400).json({ error: 'Invalid input' });
+function encodeBase64(text, urlSafe = false) {
+  let encoded = Buffer.from(text, 'utf-8').toString('base64');
+  if (urlSafe) {
+    encoded = encoded.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
   }
-  const encoded = Buffer.from(text, 'utf-8').toString('base64');
-  res.json({ result: encoded });
-});
+  return encoded;
+}
 
-app.post('/api/decode', (req, res) => {
-  const { text } = req.body;
+function decodeBase64(text, urlSafe = false) {
+  try {
+    if (urlSafe) {
+      text = text.replace(/-/g, '+').replace(/_/g, '/');
+      while (text.length % 4) text += '=';
+    }
+    return Buffer.from(text, 'base64').toString('utf-8');
+  } catch {
+    throw new Error('Invalid Base64 string');
+  }
+}
+
+app.post('/api/encode', (req, res) => {
+  const { text, urlSafe } = req.body;
   if (typeof text !== 'string') {
     return res.status(400).json({ error: 'Invalid input' });
   }
   try {
-    const decoded = Buffer.from(text, 'base64').toString('utf-8');
+    const encoded = encodeBase64(text, urlSafe);
+    res.json({ result: encoded });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+app.post('/api/decode', (req, res) => {
+  const { text, urlSafe } = req.body;
+  if (typeof text !== 'string') {
+    return res.status(400).json({ error: 'Invalid input' });
+  }
+  try {
+    const decoded = decodeBase64(text, urlSafe);
     res.json({ result: decoded });
-  } catch {
-    res.status(400).json({ error: 'Invalid Base64 string' });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
 });
 
