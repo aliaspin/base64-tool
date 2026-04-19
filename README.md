@@ -12,10 +12,16 @@ No setup required — just open the link and start encoding/decoding.
 
 ## ✨ Features
 
-- **Encode** plain text → Base64
-- **Decode** Base64 → plain text
-- One-click **Copy** output to clipboard
-- **Swap** input and output instantly
+- **Encode** & **Decode** Base64 instantly
+- **URL-safe Base64** encoding/decoding (RFC 4648)
+- **File upload** — read files directly into the editor
+- **Download results** — export encoded/decoded output
+- **Real-time conversion** — auto-convert as you type (when enabled)
+- **Conversion history** — view & reuse last 10 conversions
+- **Character counter** — shows byte size of input & output
+- **Dark/Light theme** toggle with persistent preference
+- One-click **Copy** to clipboard  
+- **Swap** input/output instantly
 - **Clear** both fields at once
 - Keyboard shortcut: `Ctrl + Enter` to convert
 - Beautiful dark UI with animated gradient background
@@ -33,7 +39,7 @@ The app exposes two JSON endpoints you can call directly.
 POST https://base64-tool.rizo2sirxycaa.workers.dev/api/encode
 Content-Type: application/json
 
-{ "text": "Hello World!" }
+{ "text": "Hello World!", "urlSafe": false }
 ```
 
 **Response:**
@@ -41,13 +47,17 @@ Content-Type: application/json
 { "result": "SGVsbG8gV29ybGQh" }
 ```
 
+**Parameters:**
+- `text` (string, required): Text to encode
+- `urlSafe` (boolean, optional): Use URL-safe Base64 encoding (RFC 4648). Replaces `+` with `-`, `/` with `_`, and removes padding. Default: `false`
+
 ### Decode
 
 ```http
 POST https://base64-tool.rizo2sirxycaa.workers.dev/api/decode
 Content-Type: application/json
 
-{ "text": "SGVsbG8gV29ybGQh" }
+{ "text": "SGVsbG8gV29ybGQh", "urlSafe": false }
 ```
 
 **Response:**
@@ -55,13 +65,22 @@ Content-Type: application/json
 { "result": "Hello World!" }
 ```
 
+**Parameters:**
+- `text` (string, required): Base64 string to decode
+- `urlSafe` (boolean, optional): Decode URL-safe Base64 (RFC 4648). Default: `false`
+
 #### cURL examples
 
 ```bash
-# Encode
+# Encode (standard Base64)
 curl -X POST https://base64-tool.rizo2sirxycaa.workers.dev/api/encode \
   -H "Content-Type: application/json" \
   -d '{"text":"Hello World!"}'
+
+# Encode (URL-safe)
+curl -X POST https://base64-tool.rizo2sirxycaa.workers.dev/api/encode \
+  -H "Content-Type: application/json" \
+  -d '{"text":"Hello World!","urlSafe":true}'
 
 # Decode
 curl -X POST https://base64-tool.rizo2sirxycaa.workers.dev/api/decode \
